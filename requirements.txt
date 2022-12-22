@@ -1,3 +1,2 @@
-openai
-telegram
-python-telegram-bot
+openai==0.25.0
+python-telegram-bot==13.15
