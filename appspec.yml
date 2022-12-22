@@ -1,0 +1,20 @@
+version: 0.0
+os: linux
+files:
+ - source: /
+   destination: /home/ec2-user/vedat-ex-1
+hooks:
+  # BeforeInstall: 
+  #  - location: deploy_install_dependencies.sh
+  #    timeout: 300
+  #    runas: root
+  # Install: 
+  # AfterInstall: 
+  #  - location: deploy_start_server.sh
+  #    timeout: 300
+  #    runas: root
+  ApplicationStart:
+   - location: deploy_start_server.sh
+     timeout: 300
+     runas: root
+  # ValidateService: 
