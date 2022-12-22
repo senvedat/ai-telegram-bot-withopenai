@@ -5,7 +5,7 @@ from telegram.bot import Bot
 import os
 from dotenv import load_dotenv
 
-load_dotenv(".env")
+load_dotenv()
 
 def get_openai_response(message):
     response = openai.Completion.create(
@@ -40,10 +40,10 @@ def handle_telegram_message(update, context):
 
 if __name__ == "__main__":
     # Replace <YOUR_API_TOKEN> with your openai API token
-    openai.api_key = os.getenv["OPENAI_KEY"]
+    openai.api_key = os.getenv("OPENAI_KEY")
     
     # Replace <YOUR_TELEGRAM_BOT_TOKEN> with your Telegram bot's token
-    bot = Bot(token = os.getenv["TELEGRAM_KEY"])
+    bot = Bot(token = os.getenv("TELEGRAM_KEY"))
     
     # Create an updater object to handle updates
     updater = Updater(bot=bot, request_kwargs={'pool_size': 8})
