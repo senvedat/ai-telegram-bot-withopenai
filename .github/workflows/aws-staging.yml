@@ -1,0 +1,55 @@
+name: Amazon EC2 Vedat - Staging
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  pull_request:
+    types:
+      - "closed"
+    branches: [deploy]
+
+jobs:
+  deploy:
+    name: Deploy AWS
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # node-version: [12.x]
+        app-name: ['vdt_ex_1_deploy']
+        deployment-group: ['vdt_ex_1_deploy_group']
+        repo: ['senvedat/ai-telegram-bot-withopenai']
+        
+    steps:
+      - uses: actions/checkout@v2
+      
+      # - name: Use Node.js ${{ matrix.node-version }}
+      #   uses: actions/setup-node@v1
+      #   with:
+      #     node-version: ${{ matrix.node-version }}
+          
+      # - name: Install dependencies
+      #   run: npm install
+      
+      # - name: Build app
+      #   run: npm run build
+
+      - name: Install AWS CLI 
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install --update
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+          
+      - name: Deploy to AWS
+        run: |
+          aws deploy create-deployment \
+          --application-name ${{ matrix.app-name }} \
+          --deployment-config-name CodeDeployDefault.OneAtATime \
+          --deployment-group-name ${{ matrix.deployment-group }} \
+          --file-exists-behavior OVERWRITE \
+          --description "GitHub Deployment for the ${{ matrix.app-name }}-${{ github.sha }}" \
+          --github-location repository=${{ matrix.repo }},commitId=${{ github.sha }}
